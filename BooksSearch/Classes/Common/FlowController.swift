@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 final class FlowController {
 
@@ -17,6 +18,8 @@ final class FlowController {
     //MARK: View Controllers creation
 
     func createRootViewController() -> UIViewController {
-        ViewController()
+        let interactor = DefaultBooksListInteractor()
+        let view = BooksListView(interactor: interactor, viewModel: interactor.viewModel)
+        return UIHostingController(rootView: view)
     }
 }
