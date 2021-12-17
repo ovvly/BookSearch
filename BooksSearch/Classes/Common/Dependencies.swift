@@ -5,5 +5,11 @@
 import Foundation
 
 final class Dependencies {
+    var apiClient: ApiClient {
+       NetworkClient(with: networkSession)
+    }
 
+    private var networkSession: NetworkSession {
+        URLSession.shared
+    }
 }

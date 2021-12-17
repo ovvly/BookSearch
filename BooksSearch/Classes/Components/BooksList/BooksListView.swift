@@ -6,6 +6,9 @@ struct BooksListView: View {
 
     var body: some View {
         Text(viewModel.title)
+            .onAppear {
+                interactor.start()
+            }
     }
 }
 
@@ -16,4 +19,5 @@ struct BooksListView_Previews: PreviewProvider {
 }
 
 private final class BooksListInteractorStub: BooksListInteractor {
+    func start() { }
 }

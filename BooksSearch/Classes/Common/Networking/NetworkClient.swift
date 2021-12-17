@@ -26,7 +26,7 @@ final class NetworkClient: ApiClient {
 
     func request<R: Resource>(resource: R, with decoder: DataParser) async throws -> R.ResourceType {
         let request = try buildUrlRequest(for: resource)
-        let (data, _) = await try networkSession.data(request: request)
+        let (data, _) = try await networkSession.data(for: request)
         return try resource.parse(data, with: decoder)
     }
 
@@ -42,7 +42,7 @@ final class NetworkClient: ApiClient {
 
     private func url<R: Resource>(for resource: R) -> URL? {
         guard var urlComponents = URLComponents(string: host) else { return nil }
-        urlComponents.path = "/\(resource.path)"
+        urlComponents.path.append("/\(resource.path)")
         urlComponents.queryItems = resource.queryItems
         urlComponents.add(apiKey: ApiKeys.googleApiKey.rawValue)
         return urlComponents.url
