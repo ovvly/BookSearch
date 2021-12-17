@@ -13,9 +13,11 @@ protocol ApiClient {
 
 final class NetworkClient: ApiClient {
     private let networkSession: NetworkSession
+    private let host: String
 
-    init(with urlSession: NetworkSession) {
+    init(with urlSession: NetworkSession, host: String = "https://www.googleapis.com/books/v1") {
         self.networkSession = urlSession
+        self.host = host
     }
 
     func request<R: Resource>(resource: R) async throws -> R.ResourceType {
@@ -39,9 +41,17 @@ final class NetworkClient: ApiClient {
     }
 
     private func url<R: Resource>(for resource: R) -> URL? {
-        guard var urlComponents = URLComponents(string: resource.path) else { return nil }
+        guard var urlComponents = URLComponents(string: host) else { return nil }
+        urlComponents.path = "/\(resource.path)"
         urlComponents.queryItems = resource.queryItems
+        urlComponents.add(apiKey: "api key")
         return urlComponents.url
+    }
+}
+
+private extension URLComponents {
+    mutating func add(apiKey: String) {
+        queryItems?.append(URLQueryItem(name: "key", value: apiKey))
     }
 }
 
