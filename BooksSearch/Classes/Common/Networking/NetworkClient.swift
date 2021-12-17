@@ -44,7 +44,7 @@ final class NetworkClient: ApiClient {
         guard var urlComponents = URLComponents(string: host) else { return nil }
         urlComponents.path = "/\(resource.path)"
         urlComponents.queryItems = resource.queryItems
-        urlComponents.add(apiKey: "api key")
+        urlComponents.add(apiKey: ApiKeys.googleApiKey.rawValue)
         return urlComponents.url
     }
 }
