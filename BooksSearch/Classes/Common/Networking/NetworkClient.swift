@@ -4,8 +4,6 @@
 
 import Foundation
 
-typealias NetworkResponse = (response: HTTPURLResponse, data: Data)
-
 protocol ApiClient {
     func request<R: Resource>(resource: R, with decoder: DataParser) async throws -> R.ResourceType
     func request<R: Resource>(resource: R) async throws -> R.ResourceType
@@ -26,7 +24,13 @@ final class NetworkClient: ApiClient {
 
     func request<R: Resource>(resource: R, with decoder: DataParser) async throws -> R.ResourceType {
         let request = try buildUrlRequest(for: resource)
-        let (data, _) = try await networkSession.data(for: request)
+        let (data, urlResponse) = try await networkSession.data(for: request)
+        guard let statusCode = (urlResponse as? HTTPURLResponse)?.statusCode else {
+            throw NetworkingError.invalidResponse
+        }
+        guard 200..<300 ~= statusCode else {
+            throw NetworkingError.invalidStatusCode(httpCode: statusCode)            
+        }
         return try resource.parse(data, with: decoder)
     }
 

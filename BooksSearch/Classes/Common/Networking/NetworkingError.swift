@@ -7,6 +7,7 @@ import Foundation
 enum NetworkingError: Error {
     case failedToBuildRequest
     case requestPayloadParsingError(Error?)
+    case invalidResponse
     case invalidStatusCode(httpCode: Int)
     case parsingError(description: String)
 }
