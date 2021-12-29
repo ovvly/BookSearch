@@ -20,12 +20,23 @@ final class DefaultBooksListInteractor: BooksListInteractor {
 
     func start() {
         Task {
-            do {
-                let booksResponse = try await apiClient.request(resource: SearchBookResource(searchTerm: "flowers"))
-                await viewModel.set(books: booksResponse.items)
-            } catch {
-                print(error)
-            }
+            await fetchBooks()
         }
+    }
+    
+    private func fetchBooks() async {
+        do {
+            let booksResponse = try await apiClient.request(resource: SearchBookResource(searchTerm: "flowers"))
+            await viewModel.set(books: booksResponse.items)
+        } catch {
+            await show(error: error, durationInSeconds: 2)
+        }
+    }
+    
+    private func show(error: Error, durationInSeconds: Int) async {
+        let errorMessage = (error as? PresentableError)?.messsage ?? error.localizedDescription
+        await viewModel.show(error: errorMessage)
+        await Task.sleep(UInt64(durationInSeconds) * 1_000_000_000)
+        await viewModel.hideError()
     }
 }

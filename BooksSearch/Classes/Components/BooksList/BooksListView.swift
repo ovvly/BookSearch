@@ -5,17 +5,25 @@ struct BooksListView: View {
     @ObservedObject var viewModel = BooksListViewModel()
 
     var body: some View {
-        VStack {
-            List {
-                ForEach(viewModel.books) { book in
-                    BookView(title: book.title, author: book.author, image: Image("book_placeholder"))
+        ZStack {
+            VStack {
+                List {
+                    ForEach(viewModel.books) { book in
+                        BookView(title: book.title, author: book.author, image: Image("book_placeholder"))
+                    }
+                }
+            }
+            Text(viewModel.title)
+                .onAppear {
+                    interactor?.start()
+                }
+            if let error = viewModel.errorInfo {
+                VStack {
+                    Text(error)
+                    Spacer()
                 }
             }
         }
-        Text(viewModel.title)
-            .onAppear {
-                interactor?.start()
-            }
     }
 }
 
