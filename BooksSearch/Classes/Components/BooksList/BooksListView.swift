@@ -1,13 +1,20 @@
 import SwiftUI
 
 struct BooksListView: View {
-    let interactor: BooksListInteractor
-    @ObservedObject var viewModel: BooksListViewModel
+    var interactor: BooksListInteractor?
+    @ObservedObject var viewModel = BooksListViewModel()
 
     var body: some View {
+        VStack {
+            List {
+                ForEach(viewModel.books) { book in
+                    BookView(title: book.title, author: book.author, image: Image("book_placeholder"))
+                }
+            }
+        }
         Text(viewModel.title)
             .onAppear {
-                interactor.start()
+                interactor?.start()
             }
     }
 }

@@ -10,8 +10,9 @@ final class ViewControllersFactory {
     private let dependencies = Dependencies()
 
     func createBooksListViewController() -> UIViewController {
-        let interactor = DefaultBooksListInteractor(apiClient: dependencies.apiClient)
-        let view = BooksListView(interactor: interactor, viewModel: interactor.viewModel)
+        var view = BooksListView()
+        let interactor = DefaultBooksListInteractor(apiClient: dependencies.apiClient, viewModel: view.viewModel)
+        view.interactor = interactor
         return UIHostingController(rootView: view)
     }
 }

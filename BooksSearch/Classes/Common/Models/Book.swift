@@ -27,6 +27,16 @@ struct Book: Decodable {
         self.link = try container.decode(URL.self, forKey: .link)
         let volumeInfoContainer = try container.nestedContainer(keyedBy: VolumeCodingKeys.self, forKey: .volumeInfo)
         self.title = try volumeInfoContainer.decode(String.self, forKey: .title)
-        self.authors = try? volumeInfoContainer.decode([String].self, forKey: .authors) ?? []
+        self.authors = (try? volumeInfoContainer.decode([String].self, forKey: .authors)) ?? []
+    }
+}
+
+extension Book: Identifiable {
+    typealias ID = String
+}
+
+extension Book {
+    var author: String {
+        authors.joined(separator: ", ")
     }
 }
